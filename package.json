@@ -1,0 +1,36 @@
+{
+  "name": "rete-svelte-render-plugin",
+  "version": "0.1.0",
+  "description": "",
+  "main": "build/rete-svelte-render-plugin.common.js",
+  "module": "build/rete-svelte-render-plugin.esm.js",
+  "scripts": {
+    "build": "rete --build rete.config.js",
+    "build:dev": "rete --build rete.config.js --watch",
+    "dev": "npm run build:dev",
+    "prepublishOnly": "npm run build",
+    "prebuild": "npm run lint",
+    "lint": "eslint src",
+    "start": "sirv public"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "svelte": "^3.19.1"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^11.0.2",
+    "@rollup/plugin-node-resolve": "^7.1.1",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.14.1",
+    "node-sass": "^4.13.1",
+    "rete-cli": "git+https://github.com/SeniorVu/rete-cli",
+    "rollup": "^2.2.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-livereload": "^1.0.4",
+    "rollup-plugin-svelte": "^5.1.1",
+    "rollup-plugin-terser": "^5.2.0",
+    "sirv-cli": "^0.4.5",
+    "svelte-preprocess-sass": "^0.2.0"
+  }
+}
