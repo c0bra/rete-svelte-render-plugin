@@ -1,20 +1,26 @@
 {
   "name": "rete-svelte-render-plugin",
   "version": "0.1.0",
-  "description": "",
+  "description": "Svelte rendering plugin for rete.js",
   "main": "build/rete-svelte-render-plugin.common.js",
   "module": "build/rete-svelte-render-plugin.esm.js",
   "scripts": {
-    "build": "rete --build rete.config.js",
-    "build:dev": "rete --build rete.config.js --watch",
+    "rete:build": "rete --build rete.config.js",
+    "rete:build:dev": "rete --build rete.config.js --watch",
+    "build": "rollup -c",
+    "build:dev": "rollup -c --watch",
     "dev": "npm run build:dev",
     "prepublishOnly": "npm run build",
     "prebuild": "npm run lint",
     "lint": "eslint src",
     "start": "sirv public"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Brian Hann",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/c0bra/rete-svelte-render-plugin.git"
+  },
   "dependencies": {
     "svelte": "^3.19.1"
   },

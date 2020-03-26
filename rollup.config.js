@@ -5,11 +5,30 @@ import { sass } from 'svelte-preprocess-sass';
 import svelte from 'rollup-plugin-svelte';
 import { terser } from 'rollup-plugin-terser';
 
+const pkgName = require('./package.json').name;
+
 const production = !process.env.ROLLUP_WATCH;
 
 export default {
     input: 'src/index.js',
-    name: 'ReteSvelteRenderPlugin',
+    output: [
+        {
+            format: 'esm',
+            sourcemap: true,
+            file: `build/${pkgName}.esm.js`
+        },
+        {
+            format: 'cjs',
+            sourcemap: true,
+            file: `build/${pkgName}.common.js`
+        },
+        {
+            format: 'umd',
+            sourcemap: true,
+            name: 'ReteSvelteRenderPlugin',
+            file: `build/${pkgName}.min.js`
+        }
+    ],
     plugins: [
         svelte({
             preprocess: {
