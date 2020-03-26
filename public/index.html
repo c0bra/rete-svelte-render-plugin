@@ -58,8 +58,9 @@
                 }
 
                 worker(node, inputs, outputs, lead) {
-                    // outputs["num"] = node.data.num;
-                    if (outputs[lead.channel]) outputs[lead.channel] = true;
+                    outputs[lead.channel] = true;
+
+                    console.log('channel out', outputs);
                 }
             }
 
@@ -83,9 +84,7 @@
                 }
 
                 worker(node, inputs, outputs) {
-                    // outputs["num"] = node.data.num;
-                    console.log('Input', inputs);
-                    const active = Object.entries(inputs).find(([source, conns]) => conns.some(c => true));
+                    const active = Object.entries(inputs).find(([source, conns]) => conns.some(c => c === true));
                     const source = active && active[0];
 
                     if (source) outputs.output = source;
@@ -114,14 +113,12 @@
                 }
 
                 worker(node, inputs, outputs) {
-                    //console.log('INPUTS', inputs);
-                    // outputs["num"] = node.data.num;
                     const out = {};
                     for (const field of fields) {
                         out[field] = inputs[field] ? inputs[field][0] : null;
                     }
 
-                    console.log('LEAD POST', out);
+                    console.log('POST', out);
                 }
             }
 
@@ -144,14 +141,6 @@
 
                 nodes.forEach(node => editor.addNode(node));
             })();
-
-            // document.getElementById("app").innerHTML = `
-            // <h1>Hello Vanilla!</h1>
-            // <div>
-            //   We use Parcel to bundle this sandbox, you can find more info about Parcel
-            //   <a href="https://parceljs.org" target="_blank" rel="noopener noreferrer">here</a>.
-            // </div>
-            // `;
         </script>
     </body>
 </html>

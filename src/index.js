@@ -63,8 +63,6 @@ function install(editor, { component: CommonSvelteComponent, options }) {
     });
 
     editor.on('rendercontrol', ({ el, control }) => {
-        console.log('rendercontrol', el, control, new Error('foo'));
-
         if (control.render && control.render !== 'svelte') return;
 
         control._svelte = createControl(editor, { el, control }, options);
