@@ -1,6 +1,6 @@
 {
   "name": "rete-svelte-render-plugin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Svelte rendering plugin for rete.js",
   "main": "build/rete-svelte-render-plugin.common.js",
   "module": "build/rete-svelte-render-plugin.esm.js",
