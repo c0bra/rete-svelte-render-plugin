@@ -2,7 +2,7 @@
   "name": "rete-svelte-render-plugin",
   "version": "1.0.1",
   "description": "Svelte rendering plugin for rete.js",
-  "main": "build/rete-svelte-render-plugin.common.js",
+  "main": "build/rete-svelte-render-plugin.min.js",
   "module": "build/rete-svelte-render-plugin.esm.js",
   "scripts": {
     "rete:build": "rete --build rete.config.js",
