@@ -1,3 +1,4 @@
+import buble from '@rollup/plugin-buble';
 import commonjs from '@rollup/plugin-commonjs';
 import livereload from 'rollup-plugin-livereload';
 import resolve from '@rollup/plugin-node-resolve';
@@ -42,6 +43,10 @@ export default {
         }),
 
         commonjs(),
+
+        buble({
+            objectAssign: 'Object.assign'
+        }),
 
         // In dev mode, call `npm run start` once
         // the bundle has been generated

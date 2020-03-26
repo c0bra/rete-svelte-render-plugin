@@ -59,7 +59,7 @@ function install(editor, { component: CommonSvelteComponent, options }) {
             options
         );
 
-        node.update = async () => await update(node);
+        node.update = Promise.resolve(update(node));
     });
 
     editor.on('rendercontrol', ({ el, control }) => {
@@ -67,7 +67,7 @@ function install(editor, { component: CommonSvelteComponent, options }) {
 
         control._svelte = createControl(editor, { el, control }, options);
 
-        control.update = async () => await update(control);
+        control.update = Promise.resolve(update(control));
     });
 
     editor.on('connectioncreated connectionremoved', connection => {

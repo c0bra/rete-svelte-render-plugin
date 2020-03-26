@@ -101,7 +101,7 @@
                     this.data.render = 'svelte';
                 }
 
-                async builder(node) {
+                builder(node) {
                     for (const field of fields) {
                         let sourceIn = new Rete.Input(field, field, stringSocket, false);
                         //await sourceIn.addControl(new TextControl(this.editor, field));
@@ -129,18 +129,20 @@
                 engine.register(c);
             });
 
-            editor.on('process nodecreated noderemoved connectioncreated connectionremoved', async () => {
-                await engine.abort();
-                await engine.process(editor.toJSON(), null, { channel: 'Other' });
-
-                console.log(editor.toJSON());
+            editor.on('process nodecreated noderemoved connectioncreated connectionremoved', () => {
+                engine
+                    .abort()
+                    .then(() => {
+                        return engine.process(editor.toJSON(), null, { channel: 'Other' });
+                    })
+                    .then(() => {
+                        console.log(editor.toJSON());
+                    });
             });
 
-            (async () => {
-                const nodes = await Promise.all(components.map(x => x.createNode()));
-
+            Promise.all(components.map(x => x.createNode())).then(nodes => {
                 nodes.forEach(node => editor.addNode(node));
-            })();
+            });
         </script>
     </body>
 </html>
