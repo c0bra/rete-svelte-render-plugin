@@ -11,6 +11,10 @@
     $: inputs = Array.from(node.inputs.values());
     $: controls = Array.from(node.controls.values());
     $: selected = editor.selected.contains(node) ? 'selected' : '';
+
+    $: {
+        console.log('inputs', inputs);
+    }
 </script>
 
 <style lang="sass" scoped>

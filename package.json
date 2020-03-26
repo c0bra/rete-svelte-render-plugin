@@ -13,7 +13,7 @@
     "prepublishOnly": "npm run build",
     "prebuild": "npm run lint",
     "lint": "eslint src",
-    "start": "sirv public"
+    "start": "sirv . --port 5001"
   },
   "author": "Brian Hann",
   "license": "MIT",

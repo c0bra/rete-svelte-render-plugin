@@ -1,17 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-    <title>Svelte app</title>
+        <title>rete-svelte-render-plugin</title>
 
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <link rel="stylesheet" href="/global.css" />
-    <link rel="stylesheet" href="/build/bundle.css" />
+        <script src="https://cdn.jsdelivr.net/npm/rete@1.4.3-rc.1/build/rete.min.js"></script>
+        <!-- <script src="https://cdn.jsdelivr.net/npm/rete-vue-render-plugin@0.5.0/build/vue-render-plugin.min.js"></script> -->
+        <script src="https://cdn.jsdelivr.net/npm/rete-connection-plugin@0.9.0/build/connection-plugin.min.js"></script>
+        <script src="../build/rete-svelte-render-plugin.min.js"></script>
 
-    <script defer src="/build/bundle.js"></script>
-  </head>
+        <style>
+            #app {
+                height: 100vh;
+                width: 100vw;
+            }
+        </style>
+    </head>
 
-  <body></body>
+    <body>
+        <div id="app"></div>
+
+        <script>
+            const container = document.getElementById('app');
+            const editor = new Rete.NodeEditor('demo@0.1.0', container);
+
+            editor.use(ConnectionPlugin.default);
+            editor.use(SvelteRenderPlugin);
+
+            const engine = new Rete.Engine('demo@0.1.0');
+
+            const stringSocket = new Rete.Socket('String');
+            const objectSocket = new Rete.Socket('Object');
+
+            class ChannelComponent extends Rete.Component {
+                constructor() {
+                    super('Channel');
+
+                    this.data.render = 'svelte';
+                }
+
+                builder(node) {
+                    const channels = [
+                        'Online Search',
+                        'Drive By',
+                        'Professional',
+                        'Resident',
+                        'Other',
+                        'Email',
+                        'Direct Mail'
+                    ];
+
+                    for (const c of channels) {
+                        node.addOutput(new Rete.Output(c, c, stringSocket, false));
+                    }
+                }
+
+                worker(node, inputs, outputs, lead) {
+                    // outputs["num"] = node.data.num;
+                    if (outputs[lead.channel]) outputs[lead.channel] = true;
+                }
+            }
+
+            class InputComponent extends Rete.Component {
+                constructor() {
+                    super('InputComponent');
+
+                    this.data.render = 'svelte';
+                }
+
+                builder(node) {
+                    const sources = ['foo', 'bar', 'baz'];
+
+                    for (const source of sources) {
+                        let sourceIn = new Rete.Input(source, source, stringSocket, true);
+
+                        node.addInput(sourceIn);
+                    }
+
+                    node.addOutput(new Rete.Output('output', 'Output', stringSocket));
+                }
+
+                worker(node, inputs, outputs) {
+                    // outputs["num"] = node.data.num;
+                    console.log('Input', inputs);
+                    const active = Object.entries(inputs).find(([source, conns]) => conns.some(c => true));
+                    const source = active && active[0];
+
+                    if (source) outputs.output = source;
+                    else outputs.output = null;
+                }
+            }
+
+            const fields = ['title', 'firstname', 'lastname', 'mediasource'];
+
+            class PostComponent extends Rete.Component {
+                constructor() {
+                    super('Post');
+
+                    this.data.render = 'svelte';
+                }
+
+                async builder(node) {
+                    for (const field of fields) {
+                        let sourceIn = new Rete.Input(field, field, stringSocket, false);
+                        //await sourceIn.addControl(new TextControl(this.editor, field));
+
+                        node.addInput(sourceIn);
+                    }
+
+                    node.addOutput(new Rete.Output('output', 'Output', objectSocket));
+                }
+
+                worker(node, inputs, outputs) {
+                    //console.log('INPUTS', inputs);
+                    // outputs["num"] = node.data.num;
+                    const out = {};
+                    for (const field of fields) {
+                        out[field] = inputs[field] ? inputs[field][0] : null;
+                    }
+
+                    console.log('LEAD POST', out);
+                }
+            }
+
+            const components = [new ChannelComponent(), new InputComponent(), new PostComponent()];
+
+            components.forEach(c => {
+                editor.register(c);
+                engine.register(c);
+            });
+
+            editor.on('process nodecreated noderemoved connectioncreated connectionremoved', async () => {
+                await engine.abort();
+                await engine.process(editor.toJSON(), null, { channel: 'Other' });
+
+                console.log(editor.toJSON());
+            });
+
+            (async () => {
+                const nodes = await Promise.all(components.map(x => x.createNode()));
+
+                nodes.forEach(node => editor.addNode(node));
+            })();
+
+            // document.getElementById("app").innerHTML = `
+            // <h1>Hello Vanilla!</h1>
+            // <div>
+            //   We use Parcel to bundle this sandbox, you can find more info about Parcel
+            //   <a href="https://parceljs.org" target="_blank" rel="noopener noreferrer">here</a>.
+            // </div>
+            // `;
+        </script>
+    </body>
 </html>

@@ -1,5 +1,5 @@
 import Node from './Node.svelte';
-// import Socket from './Socket.svelte';
+import Socket from './Socket.svelte';
 
 // options = {}
 function createSvelte(el, SvelteComponent, props) {
@@ -20,7 +20,7 @@ function createNode(editor, CommonSvelteComponent, { el, node, component, bindSo
     const svelteProps = { ...component.props, node, editor, bindSocket, bindControl };
     const app = createSvelte(el, svelteComponent, svelteProps, options);
 
-    node.svelteContext = app.$children[0];
+    node.svelteContext = app;
 
     return app;
 }
@@ -63,6 +63,8 @@ function install(editor, { component: CommonSvelteComponent, options }) {
     });
 
     editor.on('rendercontrol', ({ el, control }) => {
+        console.log('rendercontrol', el, control, new Error('foo'));
+
         if (control.render && control.render !== 'svelte') return;
 
         control._svelte = createControl(editor, { el, control }, options);
@@ -83,6 +85,6 @@ function install(editor, { component: CommonSvelteComponent, options }) {
 export default {
     name: 'rete-svelte-render',
     install,
-    Node
-    // Socket
+    Node,
+    Socket
 };

@@ -25,7 +25,7 @@ export default {
         {
             format: 'umd',
             sourcemap: true,
-            name: 'ReteSvelteRenderPlugin',
+            name: 'SvelteRenderPlugin',
             file: `build/${pkgName}.min.js`
         }
     ],

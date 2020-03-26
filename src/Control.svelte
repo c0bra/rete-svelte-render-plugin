@@ -7,11 +7,13 @@
     let el;
 
     onMount(() => {
+        if (!control) return;
+
         bindControl(el, control);
     });
 
     $: {
-        if (el) bindControl(el, control);
+        if (el && control) bindControl(el, control);
     }
 </script>
 
