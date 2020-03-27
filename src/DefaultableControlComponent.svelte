@@ -1,7 +1,6 @@
 <script>
-    import { onMount } from 'svelte';
+    import { onMount, onDestroy } from 'svelte';
 
-    export let bindControl;
     export let control;
     export let controlType = 'control';
     export let emitter;
@@ -12,25 +11,24 @@
     export let putData;
 
     let el;
+    let connections = control.parent.connections;
 
-    onMount(() => {
-        if (!control) return;
-
-        bindControl(el, control);
-
-        if (getData) el.value = getData(key);
-    });
-
-    $: {
-        if (el && control) bindControl(el, control);
-        // console.log('CONTROL', control);
-    }
+    $: console.log('connections', control.parent.connections);
+    $: console.log('emitter', emitter);
 
     function change($event) {
         if (key) putData(key, $event.target.value);
 
         emitter.trigger('process');
     }
+
+    onMount(() => {
+        emitter.on('connectioncreated connectionremoved', connection => {
+            connections = control.parent.connections;
+        });
+    });
+
+    onDestroy(() => {});
 </script>
 
 <style lang="sass" scoped>
@@ -46,14 +44,28 @@
     .control {
         padding: $socket-margin $socket-size/2 + $socket-margin;
     }
+
+    .defaultable {
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        color: white;
+        display: inline-block;
+        font-family: sans-serif;
+        font-size: 14px;
+        line-height: 24px;
+    }
 </style>
 
 <svelte:options accessors={true} />
 
-<div class={controlType}>
+<div class="{controlType} defaultable">
     {#if label}
         <label>{label}</label>
     {/if}
-    <input {type} bind:this={el} on:input={change} />
-    <!-- <span bind:this={el}>foo</span> -->
+    {#if connections.length === 0}
+        <input {type} bind:this={el} on:input={change} />
+    {/if}
 </div>

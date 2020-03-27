@@ -60,7 +60,7 @@
                 worker(node, inputs, outputs, lead) {
                     outputs[lead.channel] = true;
 
-                    console.log('channel out', outputs);
+                    // console.log('channel out', outputs);
                 }
             }
 
@@ -94,6 +94,21 @@
 
             const fields = ['title', 'firstname', 'lastname', 'mediasource'];
 
+            class DefaultableControl extends Rete.Control {
+                constructor(emitter, key, readonly, props) {
+                    super(key);
+
+                    this.render = 'svelte';
+                    this.component = SvelteRenderPlugin.DefaultableControlComponent;
+                    this.props = {
+                        emitter,
+                        key,
+                        readonly,
+                        ...props
+                    };
+                }
+            }
+
             class PostComponent extends Rete.Component {
                 constructor() {
                     super('Post');
@@ -101,10 +116,10 @@
                     this.data.render = 'svelte';
                 }
 
-                builder(node) {
+                async builder(node) {
                     for (const field of fields) {
                         let sourceIn = new Rete.Input(field, field, stringSocket, false);
-                        //await sourceIn.addControl(new TextControl(this.editor, field));
+                        await sourceIn.addControl(new DefaultableControl(this.editor, field, false, { label: field }));
 
                         node.addInput(sourceIn);
                     }
@@ -136,7 +151,7 @@
                         return engine.process(editor.toJSON(), null, { channel: 'Other' });
                     })
                     .then(() => {
-                        console.log(editor.toJSON());
+                        // console.log(editor.toJSON());
                     });
             });
 

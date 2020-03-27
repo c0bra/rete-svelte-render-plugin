@@ -1,9 +1,11 @@
 <script>
     import { onMount } from 'svelte';
+    import { kebab } from './util';
 
     export let socket;
     export let type;
     export let bindSocket;
+    export let withControl;
 
     export let output = null;
     export let input = null;
@@ -53,4 +55,4 @@
     }
 </style>
 
-<div bind:this={el} class="socket {[type, socket.name]}" title={socket.name} />
+<div bind:this={el} class="socket {kebab(type)} {kebab(socket.name)}" title={socket.name} />

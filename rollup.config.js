@@ -32,6 +32,7 @@ export default {
     ],
     plugins: [
         svelte({
+            dev: !production,
             preprocess: {
                 style: sass()
             }

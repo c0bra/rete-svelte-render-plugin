@@ -1,16 +1,24 @@
 <script>
+    import ControlBinder from './ControlBinder.svelte';
     import Control from './Control.svelte';
     import Socket from './Socket.svelte';
+    import { kebab } from './util';
 
     export let editor;
     export let node;
     export let bindSocket;
     export let bindControl;
 
+    const controlEls = [];
+
     $: outputs = Array.from(node.outputs.values());
     $: inputs = Array.from(node.inputs.values());
     $: controls = Array.from(node.controls.values());
     $: selected = editor.selected.contains(node) ? 'selected' : '';
+
+    // $: {
+    //     if (node.name === 'Post') console.log('controls', node, controls);
+    // }
 </script>
 
 <style lang="sass" scoped>
@@ -50,6 +58,7 @@
 
         .input {
             text-align: left;
+            display: flex;
         }
 
         .input-title,
@@ -76,7 +85,9 @@
     }
 </style>
 
-<div class="node {node.name}" class:selected>
+<svelte:options accessors={true} />
+
+<div class="node {kebab(node.name)}" class:selected>
     <div class="title">{node.name}</div>
 
     <!-- Outputs -->
@@ -89,18 +100,20 @@
 
     <!-- Controls -->
     {#each controls as control}
-        <Control {control} class="control" />
+        <!-- <svelte:component this={control.component} {bindControl} controlType="control" /> -->
+        <ControlBinder {bindControl} {control} />
     {/each}
 
     <!-- Inputs -->
     {#each inputs as input, index (input.key)}
         <div class="input">
-            <Socket bind:socket={input.socket} {input} {bindSocket} type="input" />
+            <Socket bind:socket={input.socket} {input} {bindSocket} type="input" withControl={input.showControl()} />
             {#if !input.showControl()}
                 <div class="input-title">{input.name}</div>
-            {/if}
-            {#if input.showControl}
-                <Control bind:control={input.control} {bindControl} class="input-control" />
+            {:else}
+                <!-- {#if input.showControl()} -->
+                <!-- <svelte:component this={input.control.component} {bindControl} controlType="input-control" /> -->
+                <ControlBinder {bindControl} {input} control={input.control} />
             {/if}
         </div>
     {/each}

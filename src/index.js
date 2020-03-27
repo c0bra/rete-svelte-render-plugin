@@ -1,3 +1,6 @@
+import Control from './Control.svelte';
+import DefaultableControlComponent from './DefaultableControlComponent.svelte';
+import InputControl from './InputControl';
 import Node from './Node.svelte';
 import Socket from './Socket.svelte';
 
@@ -26,15 +29,19 @@ function createNode(editor, CommonSvelteComponent, { el, node, component, bindSo
 }
 
 function createControl(editor, { el, control }, options) {
+    // console.log('control.props', control.props);
+
     const svelteComponent = control.component;
     const svelteProps = {
+        control,
         ...control.props,
         getData: control.getData.bind(control),
         putData: control.putData.bind(control)
     };
+
     const app = createSvelte(el, svelteComponent, svelteProps, options);
 
-    control.svelteContext = app.$children[0];
+    control.svelteContext = app;
 
     return app;
 }
@@ -50,7 +57,7 @@ const update = entity => {
 
 function install(editor, { component: CommonSvelteComponent, options }) {
     editor.on('rendernode', ({ el, node, component, bindSocket, bindControl }) => {
-        if (component.render && component.render !== 'svelte') return;
+        if (!component.render || component.render !== 'svelte') return;
 
         node._svelte = createNode(
             editor,
@@ -63,10 +70,11 @@ function install(editor, { component: CommonSvelteComponent, options }) {
     });
 
     editor.on('rendercontrol', ({ el, control }) => {
-        if (control.render && control.render !== 'svelte') return;
+        if (!control.render || control.render !== 'svelte') return;
+
+        // console.log('rendercontrol', control);
 
         control._svelte = createControl(editor, { el, control }, options);
-
         control.update = Promise.resolve(update(control));
     });
 
@@ -83,6 +91,9 @@ function install(editor, { component: CommonSvelteComponent, options }) {
 export default {
     name: 'rete-svelte-render',
     install,
+    Control,
+    DefaultableControlComponent,
     Node,
+    InputControl,
     Socket
 };
