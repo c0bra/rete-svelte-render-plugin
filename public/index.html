@@ -130,10 +130,19 @@
                 worker(node, inputs, outputs) {
                     const out = {};
                     for (const field of fields) {
-                        out[field] = inputs[field] ? inputs[field][0] : null;
+                        // console.log('node.data[field]', node.data[field]);
+
+                        if (inputs[field] && inputs[field].length > 0) {
+                            out[field] = inputs[field][0];
+                        } else if (node.data[field]) {
+                            out[field] = node.data[field];
+                        } else {
+                            out[field] = null;
+                        }
                     }
 
-                    console.log('POST', out);
+                    // console.log('POST', node, inputs);
+                    console.log('OUT', out);
                 }
             }
 
