@@ -15,6 +15,7 @@
     $: inputs = Array.from(node.inputs.values());
     $: controls = Array.from(node.controls.values());
     $: selected = editor.selected.contains(node) ? 'selected' : '';
+    $: customClass = node.data.class || ''
 
     // $: {
     //     if (node.name === 'Post') console.log('controls', node, controls);
@@ -87,7 +88,7 @@
 
 <svelte:options accessors={true} />
 
-<div class="node {kebab(node.name)}" class:selected>
+<div class="node {kebab(node.name)} {customClass}" class:selected>
     <div class="title">{node.name}</div>
 
     <!-- Outputs -->
