@@ -17,8 +17,8 @@
                 width: 100vw;
             }
 
-            .node.post {
-              background: red;
+            .node.foobar {
+              background: darkcyan !important;
             }
         </style>
     </head>
@@ -118,10 +118,11 @@
                     super('Post');
 
                     this.data.render = 'svelte';
-                    this.data.class = 'post'
                 }
 
                 async builder(node) {
+                    node.data.class = 'foobar'
+
                     for (const field of fields) {
                         let sourceIn = new Rete.Input(field, field, stringSocket, false);
                         await sourceIn.addControl(new DefaultableControl(this.editor, field, false, { label: field }));

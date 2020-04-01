@@ -8,8 +8,6 @@
     let el;
 
     onMount(() => {
-        console.log('ControlBinder', $$props);
-
         bindControl(el, control);
     });
 </script>

@@ -13,10 +13,7 @@
     let el;
     let connections = control.parent.connections;
 
-    $: console.log('connections', control.parent.connections);
-
     function change($event) {
-        console.log('putData', $event.target.value);
         if (key) putData(key, $event.target.value);
 
         emitter.trigger('process');
