@@ -13,6 +13,8 @@
     let el;
     let connections = control.parent.connections;
 
+    $: inputPlaceholder = connections.length === 0 ? 'Static value' : 'Default value'
+
     function change($event) {
         if (key) putData(key, $event.target.value);
 
@@ -62,7 +64,7 @@
     {#if label}
         <label>{label}</label>
     {/if}
-    {#if connections.length === 0}
-        <input {type} bind:this={el} on:input={change} />
-    {/if}
+
+    <input {type} bind:this={el} on:input={change} title={inputPlaceholder} placeholder={inputPlaceholder} />
+    <!-- {/if} -->
 </div>

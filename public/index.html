@@ -138,7 +138,7 @@
                     for (const field of fields) {
                         // console.log('node.data[field]', node.data[field]);
 
-                        if (inputs[field] && inputs[field].length > 0) {
+                        if (inputs[field] && inputs[field].length > 0 && inputs[field][0]) { 
                             out[field] = inputs[field][0];
                         } else if (node.data[field]) {
                             out[field] = node.data[field];
