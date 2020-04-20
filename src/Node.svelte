@@ -20,7 +20,7 @@
 
     const controlEls = [];
 
-    filter.subscribe(async f => {
+    filter.subscribe(f => {
         if (f) filteredInputs = [...Array.from(node.inputs.values()).filter(x => x.name.indexOf(f) > -1)]
         else filteredInputs = [...Array.from(node.inputs.values())]
 
@@ -30,16 +30,17 @@
             const isHidden = !filteredInputs.includes(input)
             const { connections } = input
 
-            connections.forEach(async c => {
+            connections.forEach(c => {
                 const view = editor.view.connections.get(c)
                 if (isHidden) view.el.classList.add('hidden-connection')
                 else view.el.classList.remove('hidden-connection')
             })
         })
 
-        await tick()
-
-        editor.view.updateConnections({ node })
+        tick()
+        .then(() => {
+            editor.view.updateConnections({ node })
+        })
     })
 
     $: inputs = Array.from(node.inputs.values())
