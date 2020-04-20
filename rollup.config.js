@@ -46,7 +46,8 @@ export default {
         commonjs(),
 
         buble({
-            objectAssign: 'Object.assign'
+            objectAssign: 'Object.assign',
+            transforms: { asyncAwait: false }
         }),
 
         // In dev mode, call `npm run start` once

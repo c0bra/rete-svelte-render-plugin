@@ -1,5 +1,5 @@
 <script>
-    import { setContext } from 'svelte'
+    import { setContext, tick } from 'svelte'
     import { writable } from 'svelte/store';
 
     import ControlBinder from './ControlBinder.svelte';
@@ -16,21 +16,40 @@
     setContext('filter', filter)
 
     let inputs = []
+    let filteredInputs = []
 
     const controlEls = [];
 
-    filter.subscribe(f => {
-        if (f) inputs = Array.from(node.inputs.values()).filter(x => x.name.indexOf(f) > -1)
-        else inputs = Array.from(node.inputs.values())
+    filter.subscribe(async f => {
+        if (f) filteredInputs = [...Array.from(node.inputs.values()).filter(x => x.name.indexOf(f) > -1)]
+        else filteredInputs = [...Array.from(node.inputs.values())]
+
+        const hidden = inputs.filter(x => !filteredInputs.includes(x))
+
+        inputs.forEach(input => {
+            const isHidden = !filteredInputs.includes(input)
+            const { connections } = input
+
+            connections.forEach(async c => {
+                const view = editor.view.connections.get(c)
+                if (isHidden) view.el.classList.add('hidden-connection')
+                else view.el.classList.remove('hidden-connection')
+            })
+        })
+
+        await tick()
+
+        editor.view.updateConnections({ node })
     })
 
+    $: inputs = Array.from(node.inputs.values())
     $: outputs = Array.from(node.outputs.values());
     $: controls = Array.from(node.controls.values());
     $: selected = editor.selected.contains(node) ? 'selected' : '';
     $: customClass = node.data.class || ''
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass">
     @import './vars';
 
     .node {
@@ -92,6 +111,11 @@
             padding: $socket-margin $socket-size/2 + $socket-margin;
         }
     }
+
+    :global(.hidden-connection) {
+        // display: none;
+        opacity: 0;
+    }
 </style>
 
 <svelte:options accessors={true} />
@@ -114,7 +138,7 @@
     {/each}
 
     <!-- Inputs -->
-    {#each inputs as input, index (input.key)}
+    {#each filteredInputs as input, index (input.key)}
         <div class="input">
             <Socket bind:socket={input.socket} {input} {bindSocket} type="input" withControl={input.showControl()} />
             {#if !input.showControl()}

@@ -33,6 +33,12 @@
             editor.use(ConnectionPlugin.default);
             editor.use(SvelteRenderPlugin);
 
+            /*
+            editor.on('nodetranslated', (...args) => {
+                console.log('nodetranslated', args)
+            })
+            */
+
             const engine = new Rete.Engine('demo@0.1.0');
 
             const stringSocket = new Rete.Socket('String');
