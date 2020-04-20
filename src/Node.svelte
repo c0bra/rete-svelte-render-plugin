@@ -1,4 +1,7 @@
 <script>
+    import { setContext } from 'svelte'
+    import { writable } from 'svelte/store';
+
     import ControlBinder from './ControlBinder.svelte';
     import Control from './Control.svelte';
     import Socket from './Socket.svelte';
@@ -8,18 +11,23 @@
     export let node;
     export let bindSocket;
     export let bindControl;
+    
+    const filter = writable('') 
+    setContext('filter', filter)
+
+    let inputs = []
 
     const controlEls = [];
 
+    filter.subscribe(f => {
+        if (f) inputs = Array.from(node.inputs.values()).filter(x => x.name.indexOf(f) > -1)
+        else inputs = Array.from(node.inputs.values())
+    })
+
     $: outputs = Array.from(node.outputs.values());
-    $: inputs = Array.from(node.inputs.values());
     $: controls = Array.from(node.controls.values());
     $: selected = editor.selected.contains(node) ? 'selected' : '';
     $: customClass = node.data.class || ''
-
-    // $: {
-    //     if (node.name === 'Post') console.log('controls', node, controls);
-    // }
 </script>
 
 <style lang="sass" scoped>
@@ -114,7 +122,7 @@
             {:else}
                 <!-- {#if input.showControl()} -->
                 <!-- <svelte:component this={input.control.component} {bindControl} controlType="input-control" /> -->
-                <ControlBinder {bindControl} {input} control={input.control} />
+                <ControlBinder {bindControl} control={input.control} />
             {/if}
         </div>
     {/each}

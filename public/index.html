@@ -68,6 +68,21 @@
                 }
             }
 
+            class FilterControl extends Rete.Control {
+                constructor(emitter, key, readonly, props) {
+                    super(key);
+
+                    this.render = 'svelte';
+                    this.component = SvelteRenderPlugin.FilterControlComponent;
+                    this.props = {
+                        emitter,
+                        key,
+                        readonly,
+                        ...props
+                    };
+                }
+            }
+
             class InputComponent extends Rete.Component {
                 constructor() {
                     super('InputComponent');
@@ -77,6 +92,8 @@
 
                 builder(node) {
                     const sources = ['foo', 'bar', 'baz'];
+
+                    node.addControl(new FilterControl(this.editor, 'filter'))
 
                     for (const source of sources) {
                         let sourceIn = new Rete.Input(source, source, stringSocket, true);

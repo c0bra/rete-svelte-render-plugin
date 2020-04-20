@@ -1,5 +1,6 @@
 import Control from './Control.svelte';
 import DefaultableControlComponent from './DefaultableControlComponent.svelte';
+import FilterControlComponent from './FilterControlComponent.svelte';
 import InputControl from './InputControl';
 import Node from './Node.svelte';
 import Socket from './Socket.svelte';
@@ -93,6 +94,7 @@ export default {
     install,
     Control,
     DefaultableControlComponent,
+    FilterControlComponent,
     Node,
     InputControl,
     Socket

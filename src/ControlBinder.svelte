@@ -3,7 +3,6 @@
 
     export let bindControl;
     export let control;
-    export let input;
 
     let el;
 
