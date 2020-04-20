@@ -21,7 +21,7 @@
     const controlEls = [];
 
     filter.subscribe(f => {
-        if (f) filteredInputs = [...Array.from(node.inputs.values()).filter(x => x.name.indexOf(f) > -1)]
+        if (f) filteredInputs = [...Array.from(node.inputs.values()).filter(x => x.name.toLowerCase().indexOf(f.toLowerCase()) > -1)]
         else filteredInputs = [...Array.from(node.inputs.values())]
 
         const hidden = inputs.filter(x => !filteredInputs.includes(x))
