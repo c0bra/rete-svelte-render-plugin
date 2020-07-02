@@ -22,14 +22,15 @@
         emitter.trigger('process');
     }
 
-    onMount(async () => {
+    onMount(() => {
         emitter.on('connectioncreated connectionremoved', connection => {
             connections = control.parent.connections;
         });
 
         if (value) {
-            await tick();
-            el.value = value;
+            tick().then(() => {
+                el.value = value;
+            });
         }
     });
 
