@@ -18,7 +18,7 @@
             }
 
             .node.foobar {
-              background: darkcyan !important;
+                background: darkcyan !important;
             }
         </style>
     </head>
@@ -27,6 +27,92 @@
         <div id="app"></div>
 
         <script>
+            const json = {
+                id: 'demo@0.1.0',
+                nodes: {
+                    '1': {
+                        id: 1,
+                        data: {},
+                        inputs: {},
+                        outputs: {
+                            'Online Search': {
+                                connections: []
+                            },
+                            'Drive By': {
+                                connections: []
+                            },
+                            Professional: {
+                                connections: []
+                            },
+                            Resident: {
+                                connections: []
+                            },
+                            Other: {
+                                connections: []
+                            },
+                            Email: {
+                                connections: []
+                            },
+                            'Direct Mail': {
+                                connections: []
+                            }
+                        },
+                        position: [0, 0],
+                        name: 'Channel'
+                    },
+                    '2': {
+                        id: 2,
+                        data: {},
+                        inputs: {
+                            foo: {
+                                connections: []
+                            },
+                            bar: {
+                                connections: []
+                            },
+                            baz: {
+                                connections: []
+                            }
+                        },
+                        outputs: {
+                            output: {
+                                connections: []
+                            }
+                        },
+                        position: [0, 0],
+                        name: 'InputComponent'
+                    },
+                    '3': {
+                        id: 3,
+                        data: {
+                            class: 'foobar',
+                            title: 'FOO'
+                        },
+                        inputs: {
+                            title: {
+                                connections: []
+                            },
+                            firstname: {
+                                connections: []
+                            },
+                            lastname: {
+                                connections: []
+                            },
+                            mediasource: {
+                                connections: []
+                            }
+                        },
+                        outputs: {
+                            output: {
+                                connections: []
+                            }
+                        },
+                        position: [0, -1.001612878575162],
+                        name: 'Post'
+                    }
+                }
+            };
+
             const container = document.getElementById('app');
             const editor = new Rete.NodeEditor('demo@0.1.0', container);
 
@@ -99,7 +185,7 @@
                 builder(node) {
                     const sources = ['foo', 'bar', 'baz'];
 
-                    node.addControl(new FilterControl(this.editor, 'filter'))
+                    node.addControl(new FilterControl(this.editor, 'filter'));
 
                     for (const source of sources) {
                         let sourceIn = new Rete.Input(source, source, stringSocket, true);
@@ -111,7 +197,7 @@
                 }
 
                 worker(node, inputs, outputs) {
-                    const active = Object.entries(inputs).find(([source, conns]) => conns.some(c => c === true));
+                    const active = Object.entries(inputs).find(([source, conns]) => conns.some((c) => c === true));
                     const source = active && active[0];
 
                     if (source) outputs.output = source;
@@ -144,11 +230,17 @@
                 }
 
                 async builder(node) {
-                    node.data.class = 'foobar'
+                    node.data.class = 'foobar';
 
                     for (const field of fields) {
+                        let value;
+
+                        if (field === 'title') value = 'Mr.';
+
                         let sourceIn = new Rete.Input(field, field, stringSocket, false);
-                        await sourceIn.addControl(new DefaultableControl(this.editor, field, false, { label: field }));
+                        await sourceIn.addControl(
+                            new DefaultableControl(this.editor, field, false, { label: field, value })
+                        );
 
                         node.addInput(sourceIn);
                     }
@@ -161,7 +253,7 @@
                     for (const field of fields) {
                         // console.log('node.data[field]', node.data[field]);
 
-                        if (inputs[field] && inputs[field].length > 0 && inputs[field][0]) { 
+                        if (inputs[field] && inputs[field].length > 0 && inputs[field][0]) {
                             out[field] = inputs[field][0];
                         } else if (node.data[field]) {
                             out[field] = node.data[field];
@@ -177,7 +269,7 @@
 
             const components = [new ChannelComponent(), new InputComponent(), new PostComponent()];
 
-            components.forEach(c => {
+            components.forEach((c) => {
                 editor.register(c);
                 engine.register(c);
             });
@@ -189,12 +281,12 @@
                         return engine.process(editor.toJSON(), null, { channel: 'Other' });
                     })
                     .then(() => {
-                        // console.log(editor.toJSON());
+                        console.log(editor.toJSON());
                     });
             });
 
-            Promise.all(components.map(x => x.createNode())).then(nodes => {
-                nodes.forEach(node => editor.addNode(node));
+            Promise.all(components.map((x) => x.createNode())).then((nodes) => {
+                nodes.forEach((node) => editor.addNode(node));
             });
         </script>
     </body>

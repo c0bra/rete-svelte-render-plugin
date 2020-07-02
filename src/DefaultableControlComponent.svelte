@@ -1,5 +1,5 @@
 <script>
-    import { onMount, onDestroy } from 'svelte';
+    import { onMount, onDestroy, tick } from 'svelte';
 
     export let control;
     export let controlType = 'control';
@@ -9,11 +9,12 @@
     export let type = 'text';
     export let getData;
     export let putData;
+    export let value;
 
     let el;
     let connections = control.parent.connections;
 
-    $: inputPlaceholder = connections.length === 0 ? 'Static value' : 'Default value'
+    $: inputPlaceholder = connections.length === 0 ? 'Static value' : 'Default value';
 
     function change($event) {
         if (key) putData(key, $event.target.value);
@@ -21,10 +22,15 @@
         emitter.trigger('process');
     }
 
-    onMount(() => {
+    onMount(async () => {
         emitter.on('connectioncreated connectionremoved', connection => {
             connections = control.parent.connections;
         });
+
+        if (value) {
+            await tick();
+            el.value = value;
+        }
     });
 
     onDestroy(() => {});
