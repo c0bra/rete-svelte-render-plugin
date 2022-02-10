@@ -30,7 +30,7 @@
     "@rollup/plugin-node-resolve": "^7.1.1",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.14.1",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "rete-cli": "git+https://github.com/SeniorVu/rete-cli",
     "rollup": "^2.2.0",
     "rollup-plugin-commonjs": "^10.1.0",
